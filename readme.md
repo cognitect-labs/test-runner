@@ -1,9 +1,8 @@
 # test-runner
 
-`test-runner` is a small library for running tests written with
-`clojure.test` and/or `clojure.spec.test` in plain Clojure projects
-(i.e, those that use only Clojure's built-in deps tooling, not
-Leiningen/boot/etc.)
+`test-runner` is a small library for discovering and running tests in
+plain Clojure projects (i.e, those that use only Clojure's built-in
+deps tooling, not Leiningen/boot/etc.)
 
 ## Rationale
 
@@ -15,13 +14,14 @@ Using these tools, however, there is currently no standard way to
 discover and run unit tests. Including a heavyweight project tool such
 as Leiningen or Boot just for the purpose of testing is
 overkill. Projects can build their own ad-hoc test runners, but these
-tend to lack features and tend towards the "quick and dirty," besides
-being nonstandard from project to project.
+tend to lack features that will eventually be desired, and tend
+towards the "quick and dirty," besides being nonstandard from project
+to project.
 
 This library aims to fill in the gap and provide a standardized,
-easy-to-use entry entry point for running unit and property-based
-tests while remaining a lightweight entry in Clojure's suite of
-decomplected project management tools.
+easy-to-use entry entry point for discovering and running unit and
+property-based tests while remaining a lightweight entry in Clojure's
+suite of decomplected project management tools.
 
 ## Usage
 
