@@ -41,6 +41,7 @@ Then, invoke Clojure via the command line, passing
 
 ```bash
 clj -Cdev -Rdev -m net.vanderhart.test-runner
+```
 
 You may also supply any of the additional command line options:
 
@@ -51,7 +52,7 @@ You may also supply any of the additional command line options:
   -i, --include KEYWORD   Run only tests that have this metadata keyword.
   -e, --exclude KEYWORD   Exclude tests with this metadata keyword.
   -h, --help              Display this help message
-  ```
+```
 
 All options may be repeated multiple times, for a logical OR effect. For example, the following
 invocation will run all tests in the `foo.bar` and `foo.baz` namespaces:
