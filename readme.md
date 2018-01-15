@@ -69,19 +69,19 @@ For example, you could tag your integration tests like so:
 
 ```clojure
 (deftest ^:integration test-live-system
-  (is (= 200 (http/get "http://example.com"))))
+  (is (= 200 (:status (http/get "http://example.com")))))
 ```
 
 Then to run only integration tests, you could do:
 
 ```
-clj -Cdev -Rdev -m net.vanderhart.test-runner -i integration
+clj -Cdev -Rdev -m net.vanderhart.test-runner -i :integration
 ```
 
 Or to run all tests *except* for integration tests:
 
 ```
-clj -Cdev -Rdev -m net.vanderhart.test-runner -e integration
+clj -Cdev -Rdev -m net.vanderhart.test-runner -e :integration
 ```
 
 If both inclusions and exclusions are present, exclusions take priority over inclusions.
