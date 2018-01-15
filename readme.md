@@ -43,6 +43,9 @@ Then, invoke Clojure via the command line, passing
 clj -Cdev -Rdev -m net.vanderhart.test-runner
 ```
 
+This will scan your project's `test` directory for any tests defined
+using `clojure.test` and run them.
+
 You may also supply any of the additional command line options:
 
 ```
@@ -54,11 +57,13 @@ You may also supply any of the additional command line options:
   -h, --help              Display this help message
 ```
 
-All options may be repeated multiple times, for a logical OR effect. For example, the following
-invocation will run all tests in the `foo.bar` and `foo.baz` namespaces:
+All options may be repeated multiple times, for a logical OR
+effect. For example, the following invocation will run all tests in
+the `foo.bar` and `foo.baz` namespaces, in the `test` and `src`
+directories:
 
 ```
-clj -Cdev -Rdev -m net.vanderhart.test-runner -n foo.bar -n foo.baz
+clj -Cdev -Rdev -m net.vanderhart.test-runner -d test -d src -n foo.bar -n foo.baz
 ```
 
 ### Using Inclusions and Exclusions
