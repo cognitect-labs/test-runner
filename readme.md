@@ -32,8 +32,8 @@ probably wish to put it in a `dev` or `test` alias. For example:
 ```clojure
 :aliases {:dev {:extra-paths ["test"]
                 :extra-deps {net.vanderhart/test-runner {:git/url "git@github.com:levand/test-runner"
-                                                         :sha "..."}}}}
-                                                         ```
+                                                         :sha "e3e4ce3d7e29349eeff44afd654bc2de6d5f3ae5"}}}}
+```
 
 Then, invoke Clojure via the command line, passing
 `net.vanderhart.test-runner` as the main namespace to run using the
