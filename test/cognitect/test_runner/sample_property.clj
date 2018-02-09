@@ -1,4 +1,4 @@
-(ns net.vanderhart.test-runner.sample-property
+(ns cognitect.test-runner.sample-property
   (:require [clojure.test.check :as tc]
             [clojure.test.check.generators :as gen]
             [clojure.test.check.properties :as prop]

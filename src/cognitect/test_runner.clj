@@ -1,4 +1,4 @@
-(ns net.vanderhart.test-runner
+(ns cognitect.test-runner
   (:require [clojure.tools.namespace.find :as find]
             [clojure.spec.alpha :as s]
             [clojure.java.io :as io]
@@ -105,36 +105,3 @@
     (if (-> args :options :help)
       (help args)
       (test (:options args)))))
-
-
-(comment
-
-  (-main "test" "-n" "net.vanderhart.test-runner.samples")
-  (-main "test")
-
-
-  (-main "test" "-v" "net.vanderhart.test-runner.sample-property/first-element-is-min-after-sorting"
-         #_"-v" #_"net.vanderhart.test-runner.samples/foobar")
-
-  (-main "test" "-i" "integration")
-
-  (-main "test" "-e" "integration")
-
-  (-main "test")
-
-  (-main "-h")
-
-  (->> (find/find-namespaces-in-dir (io/file "test"))
-       (map #(do (require %) %))
-       (map ns-publics)
-       (map vals)
-       (apply concat)
-       (test/test-vars)
-       
-       )
-
-  
-
-  
-
-  )

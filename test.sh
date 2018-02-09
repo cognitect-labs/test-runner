@@ -1,1 +1,1 @@
-/usr/local/bin/clojure -Srepro -R:dev -C:dev -m net.vanderhart.test-runner
+/usr/local/bin/clojure -Srepro -Adev -m cognitect.test-runner

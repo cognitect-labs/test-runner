@@ -31,16 +31,16 @@ probably wish to put it in a `dev` or `test` alias. For example:
 
 ```clojure
 :aliases {:dev {:extra-paths ["test"]
-                :extra-deps {net.vanderhart/test-runner {:git/url "git@github.com:levand/test-runner"
-                                                         :sha "e3e4ce3d7e29349eeff44afd654bc2de6d5f3ae5"}}}}
+                :extra-deps {com.cognitect/test-runner {:git/url "git@github.com:cognitect-labs/test-runner"
+                                                        :sha "e3e4ce3d7e29349eeff44afd654bc2de6d5f3ae5"}}}}
 ```
 
 Then, invoke Clojure via the command line, passing
-`net.vanderhart.test-runner` as the main namespace to run using the
+`cognitect.test-runner` as the main namespace to run using the
 `-m` option.
 
 ```bash
-clj -Cdev -Rdev -m net.vanderhart.test-runner
+clj -Adev -m cognitect.test-runner
 ```
 
 This will scan your project's `test` directory for any tests defined
@@ -63,7 +63,7 @@ the `foo.bar` and `foo.baz` namespaces, in the `test` and `src`
 directories:
 
 ```
-clj -Cdev -Rdev -m net.vanderhart.test-runner -d test -d src -n foo.bar -n foo.baz
+clj -Adev -m cognitect.test-runner -d test -d src -n foo.bar -n foo.baz
 ```
 
 ### Using Inclusions and Exclusions
@@ -80,13 +80,13 @@ For example, you could tag your integration tests like so:
 Then to run only integration tests, you could do:
 
 ```
-clj -Cdev -Rdev -m net.vanderhart.test-runner -i :integration
+clj -Adev -m cognitect.test-runner -i :integration
 ```
 
 Or to run all tests *except* for integration tests:
 
 ```
-clj -Cdev -Rdev -m net.vanderhart.test-runner -e :integration
+clj -Adev -m cognitect.test-runner -e :integration
 ```
 
 If both inclusions and exclusions are present, exclusions take priority over inclusions.
