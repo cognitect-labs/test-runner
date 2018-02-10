@@ -1,8 +1,8 @@
 # test-runner
 
 `test-runner` is a small library for discovering and running tests in
-plain Clojure projects (i.e, those that use only Clojure's built-in
-deps tooling, not Leiningen/boot/etc.)
+projects using native Clojure deps (i.e, those that use only Clojure's
+built-in dependency tooling, not Leiningen/boot/etc.)
 
 ## Rationale
 
@@ -19,28 +19,28 @@ towards the "quick and dirty," besides being nonstandard from project
 to project.
 
 This library aims to fill in the gap and provide a standardized,
-easy-to-use entry entry point for discovering and running unit and
+easy-to-use entry point for discovering and running unit and
 property-based tests while remaining a lightweight entry in Clojure's
 suite of decomplected project management tools.
 
 ## Usage
 
 Include a dependency on this project in your `deps.edn`. You will
-probably wish to put it in a `dev` or `test` alias. For example:
+probably wish to put it in `test` alias. You can also include the main
+namespace invocation using Clojure's `:main-opts` key. For example:
 
 
 ```clojure
-:aliases {:dev {:extra-paths ["test"]
-                :extra-deps {com.cognitect/test-runner {:git/url "git@github.com:cognitect-labs/test-runner"
-                                                        :sha "e3e4ce3d7e29349eeff44afd654bc2de6d5f3ae5"}}}}
+:aliases {:test {:extra-paths ["test"]
+                 :extra-deps {com.cognitect/test-runner {:git/url "git@github.com:cognitect-labs/test-runner"
+                                                         :sha "5fb4fc46ad0bf2e0ce45eba5b9117a2e89166479"}}
+                 :main-opts ["-m" "cognitect.test-runner"]}}
 ```
 
-Then, invoke Clojure via the command line, passing
-`cognitect.test-runner` as the main namespace to run using the
-`-m` option.
+Then, invoke Clojure via the command line, invoking the `test` alias:
 
 ```bash
-clj -Adev -m cognitect.test-runner
+clj -Atest
 ```
 
 This will scan your project's `test` directory for any tests defined
@@ -63,7 +63,7 @@ the `foo.bar` and `foo.baz` namespaces, in the `test` and `src`
 directories:
 
 ```
-clj -Adev -m cognitect.test-runner -d test -d src -n foo.bar -n foo.baz
+clj -Atest -d test -d src -n foo.bar -n foo.baz
 ```
 
 ### Using Inclusions and Exclusions
@@ -80,13 +80,13 @@ For example, you could tag your integration tests like so:
 Then to run only integration tests, you could do:
 
 ```
-clj -Adev -m cognitect.test-runner -i :integration
+clj -Atest -i :integration
 ```
 
 Or to run all tests *except* for integration tests:
 
 ```
-clj -Adev -m cognitect.test-runner -e :integration
+clj -Atest -e :integration
 ```
 
 If both inclusions and exclusions are present, exclusions take priority over inclusions.

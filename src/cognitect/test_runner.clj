@@ -93,7 +93,7 @@
 (defn- help
   [args]
   (println "\nUSAGE:\n")
-  (println "clj -m" (namespace `help) "<test-dir> <options>\n")
+  (println "clj -m" (namespace `help) "<options>\n")
   (println (:summary args))
   (println "\nAll options may be repeated multiple times for a logical OR effect.")
   )
