@@ -104,4 +104,7 @@
   (let [args (parse-opts args cli-options)]
     (if (-> args :options :help)
       (help args)
-      (test (:options args)))))
+      (try
+        (test (:options args))
+        (finally
+          (shutdown-agents))))))
