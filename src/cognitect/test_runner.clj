@@ -1,6 +1,5 @@
 (ns cognitect.test-runner
   (:require [clojure.tools.namespace.find :as find]
-            [clojure.spec.alpha :as s]
             [clojure.java.io :as io]
             [clojure.test :as test]
             [clojure.tools.cli :refer [parse-opts]]
@@ -66,7 +65,7 @@
 
 (defn- parse-kw
   [s]
-  (if (str/starts-with? s ":") (read-string s) (keyword s)))
+  (if (.startsWith s ":") (read-string s) (keyword s)))
 
 
 (defn- accumulate [m k v]
