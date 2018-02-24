@@ -87,20 +87,23 @@
    ["-e" "--exclude KEYWORD" "Exclude tests with this metadata keyword."
     :parse-fn parse-kw
     :assoc-fn accumulate]
-   ["-h" "--help" "Display this help message"]])
+   ["-H" "--test-help" "Display this help message"]])
 
 (defn- help
   [args]
   (println "\nUSAGE:\n")
   (println "clj -m" (namespace `help) "<options>\n")
   (println (:summary args))
-  (println "\nAll options may be repeated multiple times for a logical OR effect.")
-  )
+  (println "\nAll options may be repeated multiple times for a logical OR effect."))
 
 (defn -main
   "Entry point for the test runner"
   [& args]
   (let [args (parse-opts args cli-options)]
-    (if (-> args :options :help)
-      (help args)
-      (test (:options args)))))
+    (if (:errors args)
+      (do (doseq [e (:errors args)]
+            (println e))
+          (help args))
+      (if (-> args :options :test-help)
+        (help args)
+        (test (:options args))))))
