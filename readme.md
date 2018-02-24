@@ -49,12 +49,14 @@ using `clojure.test` and run them.
 You may also supply any of the additional command line options:
 
 ```
-  -d, --dir DIRNAME       Name of the directory containing tests. Defaults to "test".
-  -n, --namespace SYMBOL  Symbol indicating a specific namespace to test.
-  -v, --var SYMBOL        Symbol indicating the fully qualified name of a specific test.
-  -i, --include KEYWORD   Run only tests that have this metadata keyword.
-  -e, --exclude KEYWORD   Exclude tests with this metadata keyword.
-  -h, --help              Display this help message
+  -d, --dir DIRNAME            Name of the directory containing tests. Defaults to "test".
+  -n, --namespace SYMBOL       Symbol indicating a specific namespace to test.
+  -r, --namespace-regex REGEX  Regex for namespaces to test. Defaults to #".*-test$"
+                               (i.e, only namespaces ending in '-test' are evaluated)
+  -v, --var SYMBOL             Symbol indicating the fully qualified name of a specific test.
+  -i, --include KEYWORD        Run only tests that have this metadata keyword.
+  -e, --exclude KEYWORD        Exclude tests with this metadata keyword.
+  -H, --test-help              Display this help message
 ```
 
 All options may be repeated multiple times, for a logical OR

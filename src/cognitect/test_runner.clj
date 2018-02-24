@@ -7,10 +7,11 @@
   (:refer-clojure :exclude [test]))
 
 (defn- ns-filter
-  [{:keys [namespace]}]
-  (if namespace
-    #(namespace %)
-    (constantly true)))
+  [{:keys [namespace namespace-regex]}]
+  (let [regexes (or namespace-regex [#".*\-test$"])]
+    (fn [ns]
+      (or (and namespace (namespace ns))
+          (some #(re-matches % (name ns)) regexes)))))
 
 (defn- var-filter
   [{:keys [var include exclude]}]
@@ -77,6 +78,9 @@
     :assoc-fn accumulate]
    ["-n" "--namespace SYMBOL" "Symbol indicating a specific namespace to test."
     :parse-fn symbol
+    :assoc-fn accumulate]
+   ["-r" "--namespace-regex REGEX" "Regex for namespaces to test. Defaults to #\".*-test$\"\n                               (i.e, only namespaces ending in '-test' are evaluated)"
+    :parse-fn re-pattern
     :assoc-fn accumulate]
    ["-v" "--var SYMBOL" "Symbol indicating the fully qualified name of a specific test."
     :parse-fn symbol
