@@ -1,4 +1,4 @@
-(ns cognitect.test-runner.samples
+(ns cognitect.test-runner.samples-test
   (:require [clojure.test :as t :refer [deftest is testing]]))
 
 (deftest math-works

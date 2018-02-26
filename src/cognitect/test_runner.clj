@@ -1,6 +1,5 @@
 (ns cognitect.test-runner
   (:require [clojure.tools.namespace.find :as find]
-            [clojure.spec.alpha :as s]
             [clojure.java.io :as io]
             [clojure.test :as test]
             [clojure.tools.cli :refer [parse-opts]]
@@ -8,10 +7,11 @@
   (:refer-clojure :exclude [test]))
 
 (defn- ns-filter
-  [{:keys [namespace]}]
-  (if namespace
-    #(namespace %)
-    (constantly true)))
+  [{:keys [namespace namespace-regex]}]
+  (let [regexes (or namespace-regex [#".*\-test$"])]
+    (fn [ns]
+      (or (and namespace (namespace ns))
+          (some #(re-matches % (name ns)) regexes)))))
 
 (defn- var-filter
   [{:keys [var include exclude]}]
@@ -66,7 +66,7 @@
 
 (defn- parse-kw
   [s]
-  (if (str/starts-with? s ":") (read-string s) (keyword s)))
+  (if (.startsWith s ":") (read-string s) (keyword s)))
 
 
 (defn- accumulate [m k v]
@@ -79,6 +79,9 @@
    ["-n" "--namespace SYMBOL" "Symbol indicating a specific namespace to test."
     :parse-fn symbol
     :assoc-fn accumulate]
+   ["-r" "--namespace-regex REGEX" "Regex for namespaces to test. Defaults to #\".*-test$\"\n                               (i.e, only namespaces ending in '-test' are evaluated)"
+    :parse-fn re-pattern
+    :assoc-fn accumulate]
    ["-v" "--var SYMBOL" "Symbol indicating the fully qualified name of a specific test."
     :parse-fn symbol
     :assoc-fn accumulate]
@@ -88,23 +91,26 @@
    ["-e" "--exclude KEYWORD" "Exclude tests with this metadata keyword."
     :parse-fn parse-kw
     :assoc-fn accumulate]
-   ["-h" "--help" "Display this help message"]])
+   ["-H" "--test-help" "Display this help message"]])
 
 (defn- help
   [args]
   (println "\nUSAGE:\n")
   (println "clj -m" (namespace `help) "<options>\n")
   (println (:summary args))
-  (println "\nAll options may be repeated multiple times for a logical OR effect.")
-  )
+  (println "\nAll options may be repeated multiple times for a logical OR effect."))
 
 (defn -main
   "Entry point for the test runner"
   [& args]
   (let [args (parse-opts args cli-options)]
-    (if (-> args :options :help)
-      (help args)
-      (try
-        (test (:options args))
-        (finally
-          (shutdown-agents))))))
+    (if (:errors args)
+      (do (doseq [e (:errors args)]
+            (println e))
+          (help args))
+      (if (-> args :options :test-help)
+        (help args)
+        (try
+          (test (:options args))
+          (finally
+            (shutdown-agents)))))))
