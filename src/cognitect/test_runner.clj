@@ -110,4 +110,7 @@
           (help args))
       (if (-> args :options :test-help)
         (help args)
-        (test (:options args))))))
+        (try
+          (test (:options args))
+          (finally
+            (shutdown-agents)))))))
