@@ -70,7 +70,7 @@
 
 
 (defn- accumulate [m k v]
-  (update m k (fnil conj #{}) v))
+  (update-in m [k] (fnil conj #{}) v))
 
 (def cli-options
   [["-d" "--dir DIRNAME" "Name of the directory containing tests. Defaults to \"test\"."
