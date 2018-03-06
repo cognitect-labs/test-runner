@@ -61,6 +61,21 @@
         (alter-meta! var #(-> %
                               (assoc :test (::test %))
                               (dissoc ::test)))))))
+
+(defn- restore-fixtures!
+  [nses]
+  (doseq [ns nses]
+    (let [ns-obj (create-ns ns)
+          ns-meta (meta ns-obj)]
+      (when-let [fixtures (::each-fixtures ns-meta)]
+        (alter-meta! ns-obj #(-> %
+                                 (assoc :clojure.test/each-fixtures fixtures)
+                                 (dissoc ::each-fixtures))))
+      (when-let [fixtures (::once-fixtures ns-meta)]
+        (alter-meta! ns-obj #(-> %
+                                 (assoc :clojure.test/once-fixtures fixtures)
+                                 (dissoc ::once-fixtures)))))))
+
 (defn test
   [options]
   (let [dirs (or (:dir options)
@@ -76,7 +91,8 @@
       (filter-fixtures! nses)
       (apply test/run-tests nses)
       (finally
-        (restore-vars! nses)))))
+        (restore-vars! nses)
+        (restore-fixtures! nses)))))
 
 (defn- parse-kw
   [s]
