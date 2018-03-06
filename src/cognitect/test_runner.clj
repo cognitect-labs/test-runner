@@ -67,7 +67,7 @@
                   (map io/file)
                   (mapcat find/find-namespaces-in-dir))
         nses (filter (ns-filter options) nses)]
-    (println (format "\nRunning tests in %s" dirs))
+    (println (format "\nRunning tests from %s" (str/join ", " dirs)))
     (dorun (map require nses))
     (try
       (filter-vars! nses (var-filter options))
