@@ -40,6 +40,19 @@
                                 (assoc ::test (:test %))
                                 (dissoc :test))))))))
 
+(defn- filter-fixtures!
+  [nses]
+  (doseq [ns nses]
+    (let [public-vars (ns-publics ns)
+          test-vars (filter (fn [[_ var]] (:test (meta var))) public-vars)]
+      (when (empty? test-vars)
+        (alter-meta! (create-ns ns)
+                     (fn [m] (-> m
+                                 (assoc ::each-fixtures (:clojure.test/each-fixtures m))
+                                 (dissoc :clojure.test/each-fixtures)
+                                 (assoc ::once-fixtures (:clojure.test/once-fixtures m))
+                                 (dissoc :clojure.test/once-fixtures))))))))
+
 (defn- restore-vars!
   [nses]
   (doseq [ns nses]
@@ -60,6 +73,7 @@
     (dorun (map require nses))
     (try
       (filter-vars! nses (var-filter options))
+      (filter-fixtures! nses)
       (apply test/run-tests nses)
       (finally
         (restore-vars! nses)))))
