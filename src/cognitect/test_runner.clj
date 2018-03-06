@@ -8,10 +8,9 @@
 
 (defn- ns-filter
   [{:keys [namespace namespace-regex]}]
-  (let [regexes (or namespace-regex [#".*\-test$"])]
-    (fn [ns]
-      (or (and namespace (namespace ns))
-          (some #(re-matches % (name ns)) regexes)))))
+  (fn [ns]
+    (or (and (seq namespace) (namespace ns))
+        (and (seq namespace-regex) (some #(re-matches % (name ns)) namespace-regex)))))
 
 (defn- var-filter
   [{:keys [var include exclude]}]
@@ -48,10 +47,22 @@
         (alter-meta! var #(-> %
                               (assoc :test (::test %))
                               (dissoc ::test)))))))
+
+(defn- update-with-defaults
+  [options]
+  (cond-> options
+    ;; if no option to search for namespace, use a default directory
+    (nil? (:dir options))
+    (assoc :dir #{"test"})
+    ;; if no options to filter namespace, use a default regex
+    (and (nil? (:namespace options))
+         (nil? (:namespace-regex options)))
+    (assoc :namespace-regex [#".*\-test$"])))
+
 (defn test
   [options]
-  (let [dirs (or (:dir options)
-                 #{"test"})
+  (let [options (update-with-defaults options)
+        dirs (:dir options)
         nses (->> dirs
                   (map io/file)
                   (mapcat find/find-namespaces-in-dir))
