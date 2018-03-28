@@ -70,7 +70,10 @@
     (dorun (map require nses))
     (try
       (filter-vars! nses (var-filter options))
-      (eval `(~with-output (apply test/run-tests (quote ~nses))))
+      (binding [test/*test-out* (if (:output options)
+                                  (java.io.FileWriter. (:output options))
+                                  test/*test-out*)]
+        (eval `(~with-output (apply test/run-tests (quote ~nses)))))
       (finally
         (restore-vars! nses)))))
 
@@ -103,6 +106,7 @@
     :assoc-fn accumulate]
    ["-w" "--with-output SYMBOL" "Symbol indicating the with output wrapper."
     :parse-fn symbol]
+   ["-o" "--output STRING" "String indicating path to file to write output to."]
    ["-H" "--test-help" "Display this help message"]])
 
 (defn- help
