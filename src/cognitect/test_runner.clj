@@ -48,6 +48,12 @@
         (alter-meta! var #(-> %
                               (assoc :test (::test %))
                               (dissoc ::test)))))))
+
+(defn- require-and-resolve
+  [sym]
+  (require (symbol (namespace sym)))
+  (resolve sym))
+
 (defn test
   [options]
   (let [dirs (or (:dir options)
@@ -55,12 +61,16 @@
         nses (->> dirs
                   (map io/file)
                   (mapcat find/find-namespaces-in-dir))
-        nses (filter (ns-filter options) nses)]
+        nses (filter (ns-filter options) nses)
+        with-output (require-and-resolve
+                      (:with-output options 'clojure.test/with-test-out))]
+    (when (not with-output)
+      (throw (ex-info "Specified with-output not found" {})))
     (println (format "\nRunning tests in %s" dirs))
     (dorun (map require nses))
     (try
       (filter-vars! nses (var-filter options))
-      (apply test/run-tests nses)
+      (eval `(~with-output (apply test/run-tests (quote ~nses))))
       (finally
         (restore-vars! nses)))))
 
@@ -91,6 +101,8 @@
    ["-e" "--exclude KEYWORD" "Exclude tests with this metadata keyword."
     :parse-fn parse-kw
     :assoc-fn accumulate]
+   ["-w" "--with-output SYMBOL" "Symbol indicating the with output wrapper."
+    :parse-fn symbol]
    ["-H" "--test-help" "Display this help message"]])
 
 (defn- help
