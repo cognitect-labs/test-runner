@@ -100,6 +100,9 @@
   (println (:summary args))
   (println "\nAll options may be repeated multiple times for a logical OR effect."))
 
+(defn exit [status]
+  (System/exit status))
+
 (defn -main
   "Entry point for the test runner"
   [& args]
@@ -111,6 +114,7 @@
       (if (-> args :options :test-help)
         (help args)
         (try
-          (test (:options args))
+          (let [{:keys [fail]} (test (:options args))]
+            (exit (if (zero? fail) 0 1)))
           (finally
             (shutdown-agents)))))))
