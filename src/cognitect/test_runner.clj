@@ -111,6 +111,8 @@
       (if (-> args :options :test-help)
         (help args)
         (try
-          (test (:options args))
+          (let [{:keys [fail error]} (test (:options args))]
+            (System/exit (if (zero? (+ fail error)) 0 1)))
           (finally
+            ;; Only called if `test` raises an exception
             (shutdown-agents)))))))
