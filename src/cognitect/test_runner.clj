@@ -10,8 +10,9 @@
   [{:keys [namespace namespace-regex]}]
   (let [regexes (or namespace-regex [#".*\-test$"])]
     (fn [ns]
-      (or (and namespace (namespace ns))
-          (some #(re-matches % (name ns)) regexes)))))
+      (if namespace
+        (namespace ns)
+        (some #(re-matches % (name ns)) regexes)))))
 
 (defn- var-filter
   [{:keys [var include exclude]}]
