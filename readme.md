@@ -33,7 +33,7 @@ namespace invocation using Clojure's `:main-opts` key. For example:
 ```clojure
 :aliases {:test {:extra-paths ["test"]
                  :extra-deps {com.cognitect/test-runner {:git/url "https://github.com/cognitect-labs/test-runner.git"
-                                                         :sha "5fb4fc46ad0bf2e0ce45eba5b9117a2e89166479"}}
+                                                         :sha "028a6d41ac9ac5d5c405dfc38e4da6b4cc1255d5"}}
                  :main-opts ["-m" "cognitect.test-runner"]}}
 ```
 
