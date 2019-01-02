@@ -19,7 +19,8 @@
   (let [test-specific (if var
                         (set (map #(or (resolve %)
                                        (throw (ex-info (str "Could not resolve var: " %)
-                                                       {:symbol %})))))
+                                                       {:symbol %})))
+                                  var))
                         (constantly true))
         test-inclusion (if include
                          #((apply some-fn include) (meta %))
