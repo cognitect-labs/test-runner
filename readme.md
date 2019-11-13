@@ -40,7 +40,7 @@ namespace invocation using Clojure's `:main-opts` key. For example:
 Then, invoke Clojure via the command line, invoking the `test` alias:
 
 ```bash
-clj -Atest
+clj -A:test
 ```
 
 This will scan your project's `test` directory for any tests defined
@@ -65,7 +65,7 @@ the `foo.bar` and `foo.baz` namespaces, in the `test` and `src`
 directories:
 
 ```
-clj -Atest -d test -d src -n foo.bar -n foo.baz
+clj -A:test -d test -d src -n foo.bar -n foo.baz
 ```
 
 ### Using Inclusions and Exclusions
@@ -82,13 +82,13 @@ For example, you could tag your integration tests like so:
 Then to run only integration tests, you could do:
 
 ```
-clj -Atest -i :integration
+clj -A:test -i :integration
 ```
 
 Or to run all tests *except* for integration tests:
 
 ```
-clj -Atest -e :integration
+clj -A:test -e :integration
 ```
 
 If both inclusions and exclusions are present, exclusions take priority over inclusions.
