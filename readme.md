@@ -6,11 +6,11 @@ built-in dependency tooling, not Leiningen/boot/etc.)
 
 ## Rationale
 
-Clojure's 1.9 release includes standalone tools for dependency
+Clojure's 1.9 release included standalone tools for dependency
 resolution, classpath construction, and launching processes. Clojure
 also ships with a straightforward testing library, `clojure.test`.
 
-Using these tools, however, there is currently no standard way to
+Using these tools, however, there was no standard way to
 discover and run unit tests. Including a heavyweight project tool such
 as Leiningen or Boot just for the purpose of testing is
 overkill. Projects can build their own ad-hoc test runners, but these
@@ -39,8 +39,10 @@ namespace invocation using Clojure's `:main-opts` key. For example:
 
 Then, invoke Clojure via the command line, invoking the `test` alias:
 
+*Note: this assume Clojure tools >= 1.10.1.697. On older versions, use -A instead.*
+
 ```bash
-clj -A:test
+clj -M:test
 ```
 
 This will scan your project's `test` directory for any tests defined
@@ -65,7 +67,7 @@ the `foo.bar` and `foo.baz` namespaces, in the `test` and `src`
 directories:
 
 ```
-clj -A:test -d test -d src -n foo.bar -n foo.baz
+clj -M:test -d test -d src -n foo.bar -n foo.baz
 ```
 
 ### Using Inclusions and Exclusions
@@ -82,13 +84,13 @@ For example, you could tag your integration tests like so:
 Then to run only integration tests, you could do:
 
 ```
-clj -A:test -i :integration
+clj -M:test -i :integration
 ```
 
 Or to run all tests *except* for integration tests:
 
 ```
-clj -A:test -e :integration
+clj -M:test -e :integration
 ```
 
 If both inclusions and exclusions are present, exclusions take priority over inclusions.
