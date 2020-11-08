@@ -6,6 +6,11 @@
             [clojure.string :as str])
   (:refer-clojure :exclude [test]))
 
+(defn- require-and-resolve
+  [sym]
+  (require (symbol (namespace sym)))
+  (resolve sym))
+
 (defn- ns-filter
   [{:keys [namespace namespace-regex]}]
   (let [regexes (or namespace-regex [#".*\-test$"])]
@@ -57,12 +62,14 @@
         nses (->> dirs
                   (map io/file)
                   (mapcat find/find-namespaces-in-dir))
-        nses (filter (ns-filter options) nses)]
+        nses (filter (ns-filter options) nses)
+        report (require-and-resolve (:report options 'clojure.test/report))]
     (println (format "\nRunning tests in %s" dirs))
     (dorun (map require nses))
     (try
       (filter-vars! nses (var-filter options))
-      (apply test/run-tests nses)
+      (with-redefs [test/report report]
+        (apply test/run-tests nses))
       (finally
         (restore-vars! nses)))))
 
@@ -93,6 +100,8 @@
    ["-e" "--exclude KEYWORD" "Exclude tests with this metadata keyword."
     :parse-fn parse-kw
     :assoc-fn accumulate]
+   ["-R" "--report SYMBOL" "Use the provided report function"
+    :parse-fn symbol]
    ["-H" "--test-help" "Display this help message"]])
 
 (defn- help
