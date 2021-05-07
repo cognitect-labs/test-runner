@@ -70,7 +70,6 @@
   [^String s]
   (if (.startsWith s ":") (read-string s) (keyword s)))
 
-
 (defn- accumulate [m k v]
   (update-in m [k] (fnil conj #{}) v))
 
@@ -93,6 +92,12 @@
    ["-e" "--exclude KEYWORD" "Exclude tests with this metadata keyword."
     :parse-fn parse-kw
     :assoc-fn accumulate]
+   ["-b" "--before SYMBOL" "Symbol indicating the fully qualified name of a specific function to run before tests."
+    :parse-fn symbol
+    :assoc-fn accumulate]
+   ["-a" "--after SYMBOL" "Symbol indicating the fully qualified name of a specific function to run after tests."
+    :parse-fn symbol
+    :assoc-fn accumulate]
    ["-H" "--test-help" "Display this help message"]])
 
 (defn- help
@@ -101,6 +106,14 @@
   (println "clj -m" (namespace `help) "<options>\n")
   (println (:summary args))
   (println "\nAll options may be repeated multiple times for a logical OR effect."))
+
+(defn before [args]
+  (doseq [f (-> args :options :before)]
+    ((resolve f))))
+
+(defn after [args]
+  (doseq [f (-> args :options :after)]
+    ((resolve f))))
 
 (defn -main
   "Entry point for the test runner"
@@ -113,9 +126,12 @@
           (System/exit 1))
       (if (-> args :options :test-help)
         (help args)
-        (try
-          (let [{:keys [fail error]} (test (:options args))]
-            (System/exit (if (zero? (+ fail error)) 0 1)))
-          (finally
-            ;; Only called if `test` raises an exception
-            (shutdown-agents)))))))
+        (do (before args)
+            (try
+              (let [{:keys [fail error]} (test (:options args))]
+                (after args)
+                (System/exit (if (zero? (+ fail error)) 0 1)))
+              (finally
+                ;; Only called if `test` raises an exception
+                (after args)
+                (shutdown-agents))))))))
