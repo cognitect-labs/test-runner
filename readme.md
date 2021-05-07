@@ -23,31 +23,64 @@ easy-to-use entry point for discovering and running unit and
 property-based tests while remaining a lightweight entry in Clojure's
 suite of decomplected project management tools.
 
-## Usage
+## Configuration 
 
 Include a dependency on this project in your `deps.edn`. You will
-probably wish to put it in `test` alias. You can also include the main
-namespace invocation using Clojure's `:main-opts` key. For example:
-
+probably wish to put it in the `test` alias:
 
 ```clojure
 :aliases {:test {:extra-paths ["test"]
                  :extra-deps {io.github.cognitect-labs/test-runner 
                               {:git/url "https://github.com/cognitect-labs/test-runner.git"
                                :sha "209b64504cb3bd3b99ecfec7937b358a879f55c1"}}
-                 :main-opts ["-m" "cognitect.test-runner"]}}
+                 :main-opts ["-m" "cognitect.test-runner"]
+                 :exec-fn cognitect.test-runner.api/test}}
 ```
 
-Then, invoke Clojure via the command line, invoking the `test` alias:
+### Invoke with `clojure -X` (exec style)
+
+Invoking the test-runner with `clojure -X` will call the test function with a map of arguments,
+which can be supplied either in the alias (via `:exec-args`) or on the command-line, or both.
+
+Create the alias with `:exec-fn` to simplify the call:
+
+```clojure
+:aliases {:test {:extra-paths ["test"]
+                 :extra-deps {io.github.cognitect-labs/test-runner 
+                              {:git/url "https://github.com/cognitect-labs/test-runner.git"
+                               :sha "209b64504cb3bd3b99ecfec7937b358a879f55c1"}}
+                 :exec-fn cognitect.test-runner.api/test}}
+```
+
+Invoke it with:
 
 ```bash
-clj -M:test
+clj -X:test ...args...
 ```
 
 This will scan your project's `test` directory for any tests defined
 using `clojure.test` and run them.
 
 You may also supply any of the additional command line options:
+
+```
+  :dirs - coll of directories containing tests, default= ["test"]
+  :nses - coll of namespace symbols to test
+  :patterns - coll of regex strings to match namespaces, default= [".*-test$"]
+  :vars - coll of fully qualified symbols to run tests on
+  :includes - coll of test metadata keywords to include
+  :excludes - coll of test metadata keywords to exclude"
+```
+
+### Invoke with `clojure -M` (clojure.main)
+
+To use the older clojure.main command line style:
+
+```bash
+clj -M:test ...args...
+```
+
+Use any of the additional command line options:
 
 ```
   -d, --dir DIRNAME            Name of the directory containing tests. Defaults to "test".
@@ -60,14 +93,13 @@ You may also supply any of the additional command line options:
   -H, --test-help              Display this help message
 ```
 
-All options may be repeated multiple times, for a logical OR
-effect. For example, the following invocation will run all tests in
-the `foo.bar` and `foo.baz` namespaces, in the `test` and `src`
-directories:
+## Operation
 
-```
-clj -M:test -d test -d src -n foo.bar -n foo.baz
-```
+There are three main steps to test execution:
+
+* Find dirs to scan - by default "test"
+* Find namespaces in those dirs (either by specific name or regex pattern or both) - by default all ending in "-test"
+* Find vars to invoke in those namespaces - by default all, unless specific vars are listed, further filtered by include and exclude metadata
 
 ### Using Inclusions and Exclusions
 
@@ -80,15 +112,17 @@ For example, you could tag your integration tests like so:
   (is (= 200 (:status (http/get "http://example.com")))))
 ```
 
-Then to run only integration tests, you could do:
+Then to run only integration tests, you could do one of:
 
 ```
+clj -X:test :includes '[:integration]'
 clj -M:test -i :integration
 ```
 
-Or to run all tests *except* for integration tests:
+Or to run all tests *except* for integration tests, one of:
 
 ```
+clj -X:test :excludes '[:integration]'
 clj -M:test -e :integration
 ```
 
