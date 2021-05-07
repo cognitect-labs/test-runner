@@ -39,8 +39,6 @@ namespace invocation using Clojure's `:main-opts` key. For example:
 
 Then, invoke Clojure via the command line, invoking the `test` alias:
 
-*Note: this assume Clojure tools >= 1.10.1.697. On older versions, use -A instead.*
-
 ```bash
 clj -M:test
 ```
@@ -94,3 +92,9 @@ clj -M:test -e :integration
 ```
 
 If both inclusions and exclusions are present, exclusions take priority over inclusions.
+
+## Copyright and License
+
+Copyright © 2018-2021 Cognitect
+
+Licensed under the Eclipse Public License, Version 2.0
