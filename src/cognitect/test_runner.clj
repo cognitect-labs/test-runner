@@ -67,7 +67,7 @@
         (restore-vars! nses)))))
 
 (defn- parse-kw
-  [s]
+  [^String s]
   (if (.startsWith s ":") (read-string s) (keyword s)))
 
 
