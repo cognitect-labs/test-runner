@@ -41,6 +41,19 @@
                                 (assoc ::test (:test %))
                                 (dissoc :test))))))))
 
+(defn- filter-fixtures!
+  [nses]
+  (doseq [ns nses]
+    (let [public-vars (ns-publics ns)
+          test-vars (filter (fn [[_ var]] (:test (meta var))) public-vars)]
+      (when (empty? test-vars)
+        (alter-meta! (create-ns ns)
+                     (fn [m] (-> m
+                                 (assoc ::each-fixtures (:clojure.test/each-fixtures m))
+                                 (dissoc :clojure.test/each-fixtures)
+                                 (assoc ::once-fixtures (:clojure.test/once-fixtures m))
+                                 (dissoc :clojure.test/once-fixtures))))))))
+
 (defn- restore-vars!
   [nses]
   (doseq [ns nses]
@@ -49,6 +62,21 @@
         (alter-meta! var #(-> %
                               (assoc :test (::test %))
                               (dissoc ::test)))))))
+
+(defn- restore-fixtures!
+  [nses]
+  (doseq [ns nses]
+    (let [ns-obj (create-ns ns)
+          ns-meta (meta ns-obj)]
+      (when-let [fixtures (::each-fixtures ns-meta)]
+        (alter-meta! ns-obj #(-> %
+                                 (assoc :clojure.test/each-fixtures fixtures)
+                                 (dissoc ::each-fixtures))))
+      (when-let [fixtures (::once-fixtures ns-meta)]
+        (alter-meta! ns-obj #(-> %
+                                 (assoc :clojure.test/once-fixtures fixtures)
+                                 (dissoc ::once-fixtures)))))))
+
 (defn test
   [options]
   (let [dirs (or (:dir options)
@@ -61,9 +89,11 @@
     (dorun (map require nses))
     (try
       (filter-vars! nses (var-filter options))
+      (filter-fixtures! nses)
       (apply test/run-tests nses)
       (finally
-        (restore-vars! nses)))))
+        (restore-vars! nses)
+        (restore-fixtures! nses)))))
 
 (defn- parse-kw
   [^String s]
