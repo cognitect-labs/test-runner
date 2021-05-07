@@ -109,7 +109,8 @@
     (if (:errors args)
       (do (doseq [e (:errors args)]
             (println e))
-          (help args))
+          (help args)
+          (System/exit 1))
       (if (-> args :options :test-help)
         (help args)
         (try
