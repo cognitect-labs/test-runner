@@ -2,8 +2,7 @@
   (:require [clojure.tools.namespace.find :as find]
             [clojure.java.io :as io]
             [clojure.test :as test]
-            [clojure.tools.cli :refer [parse-opts]]
-            [clojure.string :as str])
+            [clojure.tools.cli :as cli])
   (:refer-clojure :exclude [test]))
 
 (defn- ns-filter
@@ -35,7 +34,7 @@
 (defn- filter-vars!
   [nses filter-fn]
   (doseq [ns nses]
-    (doseq [[name var] (ns-publics ns)]
+    (doseq [[_name var] (ns-publics ns)]
       (when (:test (meta var))
         (when (not (filter-fn var))
           (alter-meta! var #(-> %
@@ -45,7 +44,7 @@
 (defn- restore-vars!
   [nses]
   (doseq [ns nses]
-    (doseq [[name var] (ns-publics ns)]
+    (doseq [[_name var] (ns-publics ns)]
       (when (::test (meta var))
         (alter-meta! var #(-> %
                               (assoc :test (::test %))
@@ -105,7 +104,7 @@
 (defn -main
   "Entry point for the test runner"
   [& args]
-  (let [args (parse-opts args cli-options)]
+  (let [args (cli/parse-opts args cli-options)]
     (if (:errors args)
       (do (doseq [e (:errors args)]
             (println e))
