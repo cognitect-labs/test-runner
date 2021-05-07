@@ -9,8 +9,8 @@
   [{:keys [namespace namespace-regex]}]
   (let [regexes (or namespace-regex [#".*\-test$"])]
     (fn [ns]
-      (if namespace
-        (namespace ns)
+      (or
+        (get namespace ns)
         (some #(re-matches % (name ns)) regexes)))))
 
 (defn- var-filter
@@ -100,6 +100,10 @@
   (println "clj -m" (namespace `help) "<options>\n")
   (println (:summary args))
   (println "\nAll options may be repeated multiple times for a logical OR effect."))
+
+(comment
+  (cli/parse-opts ["-r" "ex.foo-*" "-n" "ex.foo" "-n" "n1"] cli-options)
+  )
 
 (defn -main
   "Entry point for the test runner"
