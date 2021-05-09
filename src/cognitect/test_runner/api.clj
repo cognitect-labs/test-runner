@@ -11,7 +11,6 @@
                  :var (when (seq vars) (set vars))
                  :include (when (seq includes) (set includes))
                  :exclude (when (seq excludes) (set excludes))}]
-    (clojure.pprint/pprint adapted)
     (tr/test adapted)))
 
 (defn test
