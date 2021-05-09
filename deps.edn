@@ -2,6 +2,7 @@
  :deps {org.clojure/tools.namespace {:mvn/version "1.1.0"}
         org.clojure/tools.cli {:mvn/version "1.0.206"}
         org.clojure/clojure {:mvn/version "1.9.0"}}
- :aliases {:test {:extra-paths ["test" "dev"]
+ :aliases {:test {:extra-paths ["test"]
                   :extra-deps {org.clojure/test.check {:mvn/version "1.0.0"}}
-                  :main-opts ["-m" "cognitect.test-runner"]}}}
+                  :main-opts ["-m" "cognitect.test-runner"]
+                  :exec-fn cognitect.test-runner.api/test}}}
