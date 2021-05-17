@@ -11,7 +11,8 @@
     (fn [ns]
       (or
         (get namespace ns)
-        (some #(re-matches % (name ns)) regexes)))))
+        (when-not (identical? ::none namespace-regex)
+          (some #(re-matches % (name ns)) regexes))))))
 
 (defn- var-filter
   [{:keys [var include exclude]}]
@@ -142,9 +143,16 @@
           (System/exit 1))
       (if (-> args :options :test-help)
         (help args)
-        (try
-          (let [{:keys [fail error]} (test (:options args))]
-            (System/exit (if (zero? (+ fail error)) 0 1)))
-          (finally
-            ;; Only called if `test` raises an exception
-            (shutdown-agents)))))))
+        (let [opts (:options args)
+              opts (if (:namespace opts)
+                     (if (:namespace-regex opts)
+                       opts
+                       ;; explicit :namespace option disables default namespace-regex
+                       (assoc opts :namespace-regex ::none))
+                     opts)]
+          (try
+            (let [{:keys [fail error]} (test opts)]
+              (System/exit (if (zero? (+ fail error)) 0 1)))
+            (finally
+              ;; Only called if `test` raises an exception
+              (shutdown-agents))))))))
