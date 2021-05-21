@@ -13,8 +13,8 @@
     nil nil '[ns1-test ns2-test ns3 ns4 ns5] '[ns1-test ns2-test]
 
     ;; specific namespaces
-    '#{ns3} nil '[ns1-test ns2-test] '[ns1-test ns2-test]
-    '#{ns3 ns4} nil '[ns1-test ns2-test ns3 ns4 ns5] '[ns1-test ns2-test ns3 ns4]
+    '#{ns3} nil '[ns1-test ns2-test] '[]
+    '#{ns3 ns4} nil '[ns1-test ns2-test ns3 ns4 ns5] '[ns3 ns4]
 
     ;; regexes
     nil #{#"ns1.*" #"ns3"} '[ns1-test ns2-test ns3 ns4] '[ns1-test ns3]

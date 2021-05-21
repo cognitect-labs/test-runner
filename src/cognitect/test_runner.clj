@@ -7,11 +7,14 @@
 
 (defn- ns-filter
   [{:keys [namespace namespace-regex]}]
-  (let [regexes (or namespace-regex [#".*\-test$"])]
+  (let [[include-ns include-regexes]
+        (if (or (seq namespace) (seq namespace-regex))
+          [namespace namespace-regex]
+          [nil [#".*\-test$"]])]
     (fn [ns]
       (or
-        (get namespace ns)
-        (some #(re-matches % (name ns)) regexes)))))
+        (get include-ns ns)
+        (some #(re-matches % (name ns)) include-regexes)))))
 
 (defn- var-filter
   [{:keys [var include exclude]}]
@@ -110,7 +113,7 @@
    ["-n" "--namespace SYMBOL" "Symbol indicating a specific namespace to test."
     :parse-fn symbol
     :assoc-fn accumulate]
-   ["-r" "--namespace-regex REGEX" "Regex for namespaces to test. Defaults to #\".*-test$\"\n                               (i.e, only namespaces ending in '-test' are evaluated)"
+   ["-r" "--namespace-regex REGEX" "Regex for namespaces to test."
     :parse-fn re-pattern
     :assoc-fn accumulate]
    ["-v" "--var SYMBOL" "Symbol indicating the fully qualified name of a specific test."
@@ -129,7 +132,8 @@
   (println "\nUSAGE:\n")
   (println "clj -m" (namespace `help) "<options>\n")
   (println (:summary args))
-  (println "\nAll options may be repeated multiple times for a logical OR effect."))
+  (println "\nAll options may be repeated multiple times for a logical OR effect.")
+  (println "If neither -n nor -r is supplied, use -r #\".*-test$\" (ns'es ending in '-test')"))
 
 (defn -main
   "Entry point for the test runner"

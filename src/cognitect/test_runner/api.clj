@@ -18,10 +18,12 @@
 
   * :dirs - coll of directories containing tests, default= [\"test\"]
   * :nses - coll of namespace symbols to test
-  * :patterns - coll of regex strings to match namespaces, default= [\".*-test$\"]
+  * :patterns - coll of regex strings to match namespaces
   * :vars - coll of fully qualified symbols to run tests on
   * :includes - coll of test metadata keywords to include
-  * :excludes - coll of test metadata keywords to exclude"
+  * :excludes - coll of test metadata keywords to exclude
+
+  If neither :nses nor :patterns is supplied, use `:patterns [\".*-test$\"]"`.
   [opts]
   (try
     (let [{:keys [fail error]}
