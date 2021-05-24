@@ -23,7 +23,7 @@
   * :includes - coll of test metadata keywords to include
   * :excludes - coll of test metadata keywords to exclude
 
-  If neither :nses nor :patterns is supplied, use `:patterns [\".*-test$\"]"`.
+  If neither :nses nor :patterns is supplied, use `:patterns [\".*-test$\"]`."
   [opts]
   (try
     (let [{:keys [fail error]}
