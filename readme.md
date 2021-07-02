@@ -49,7 +49,7 @@ Create the alias with `:exec-fn` to simplify the call:
 :aliases {:test {:extra-paths ["test"]
                  :extra-deps {io.github.cognitect-labs/test-runner 
                               {:git/url "https://github.com/cognitect-labs/test-runner.git"
-                               :sha "209b64504cb3bd3b99ecfec7937b358a879f55c1"}}
+                               :sha "705ad25bbf0228b1c38d0244a36001c2987d7337"}}
                  :exec-fn cognitect.test-runner.api/test}}
 ```
 
