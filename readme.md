@@ -29,11 +29,11 @@ Include a dependency on this project in your `deps.edn`. You will
 probably wish to put it in the `test` alias:
 
 ```clojure
-;; v0.3.1
+;; v0.4.0
 :aliases {:test {:extra-paths ["test"]
                  :extra-deps {io.github.cognitect-labs/test-runner 
                               {:git/url "https://github.com/cognitect-labs/test-runner.git"
-                               :sha "705ad25bbf0228b1c38d0244a36001c2987d7337"}}
+                               :sha "8c3f22363d63715de4087b038d79ae0de36a3263"}}
                  :main-opts ["-m" "cognitect.test-runner"]
                  :exec-fn cognitect.test-runner.api/test}}
 ```
@@ -49,7 +49,7 @@ Create the alias with `:exec-fn` to simplify the call:
 :aliases {:test {:extra-paths ["test"]
                  :extra-deps {io.github.cognitect-labs/test-runner 
                               {:git/url "https://github.com/cognitect-labs/test-runner.git"
-                               :sha "705ad25bbf0228b1c38d0244a36001c2987d7337"}}
+                               :sha "8c3f22363d63715de4087b038d79ae0de36a3263"}}
                  :exec-fn cognitect.test-runner.api/test}}
 ```
 
