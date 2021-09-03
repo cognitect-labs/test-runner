@@ -1,6 +1,8 @@
 Changelog
 ===========
 
+* v0.5.0 - Sept 3, 2021
+  * Fix #34 - remove custom exit logic, now handled by clj -X
 * v0.4.0 - July 16, 2021
   * Fix #33 - don't test namespaces without active tests - thanks Mathieu Lirzin!
 * v0.3.1 - May 24, 2021
