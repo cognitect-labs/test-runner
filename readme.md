@@ -76,7 +76,7 @@ You may also supply any of the additional command line options:
 If neither :dirs or :nses is supplied, will use:
 
 ```
-  :nses [".*-test$"]
+  :patterns [".*-test$"]
 ```
 
 ### Invoke with `clojure -M` (clojure.main)
