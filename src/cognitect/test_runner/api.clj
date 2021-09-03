@@ -25,9 +25,6 @@
 
   If neither :nses nor :patterns is supplied, use `:patterns [\".*-test$\"]`."
   [opts]
-  (try
-    (let [{:keys [fail error]}
-          (do-test opts)]
-      (System/exit (if (zero? (+ fail error)) 0 1)))
-    (finally
-      (shutdown-agents))))
+  (let [{:keys [fail error]} (do-test opts)]
+    (when (> (+ fail error) 0)
+      (throw (ex-info "Test failures or errors occurred." {})))))
