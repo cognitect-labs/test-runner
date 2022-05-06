@@ -126,6 +126,6 @@ If both inclusions and exclusions are present, exclusions take priority over inc
 
 ## Copyright and License
 
-Copyright © 2018-2021 Cognitect
+Copyright © 2018-2022 Cognitect
 
 Licensed under the Eclipse Public License, Version 2.0
