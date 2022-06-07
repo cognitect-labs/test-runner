@@ -4,13 +4,14 @@
     [cognitect.test-runner :as tr]))
 
 (defn- do-test
-  [{:keys [dirs nses patterns vars includes excludes]}]
+  [{:keys [dirs nses patterns vars includes excludes only]}]
   (let [adapted {:dir (when (seq dirs) (set dirs))
                  :namespace (when (seq nses) (set nses))
                  :namespace-regex (when (seq patterns) (map re-pattern patterns))
                  :var (when (seq vars) (set vars))
                  :include (when (seq includes) (set includes))
-                 :exclude (when (seq excludes) (set excludes))}]
+                 :exclude (when (seq excludes) (set excludes))
+                 :only only}]
     (tr/test adapted)))
 
 (defn test
@@ -22,6 +23,7 @@
   * :vars - coll of fully qualified symbols to run tests on
   * :includes - coll of test metadata keywords to include
   * :excludes - coll of test metadata keywords to exclude
+  * :only - a namespace or var to run tests on
 
   If neither :nses nor :patterns is supplied, use `:patterns [\".*-test$\"]`."
   [opts]

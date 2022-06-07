@@ -59,9 +59,24 @@
   (some (comp :test meta)
         (-> ns ns-publics vals)))
 
+(defn- normalize-opts [opts]
+  (let [{:keys [namespace var only namespace-regex]} opts
+        [namespace var namespace-regex]
+        (if only
+          (if (qualified-symbol? only)
+            [nil #{only} nil]
+            [#{only} nil nil])
+          [namespace var namespace-regex])
+        opts (assoc opts
+                    :namespace namespace
+                    :var var
+                    :namespace-regex namespace-regex)]
+    opts))
+
 (defn test
   [options]
-  (let [dirs (or (:dir options)
+  (let [options (normalize-opts options)
+        dirs (or (:dir options)
                  #{"test"})
         nses (->> dirs
                   (map io/file)
@@ -102,6 +117,8 @@
    ["-e" "--exclude KEYWORD" "Exclude tests with this metadata keyword."
     :parse-fn parse-kw
     :assoc-fn accumulate]
+   ["-o" "--only SYMBOL" "Symbol indicating a specific namespace or var to test."
+    :parse-fn symbol]
    ["-H" "--test-help" "Display this help message"]])
 
 (defn- help
