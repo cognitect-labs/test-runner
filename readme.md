@@ -71,7 +71,7 @@ If neither :dirs or :nses is supplied, will use:
 Note that when supplying collections of values via `clj -X`, you will need to quote those vectors (also see [quoting](https://clojure.org/reference/deps_and_cli#quoting)] for more):
 
 ```
-clj -X:test :dirs '["test" "interation"]'
+clj -X:test :dirs '["test" "integration"]'
 ```
 
 ### Invoke with `clojure -M` (clojure.main)
