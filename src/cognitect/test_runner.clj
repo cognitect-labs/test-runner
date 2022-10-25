@@ -73,7 +73,8 @@
       (filter-vars! nses (var-filter options))
       (apply test/run-tests (filter contains-tests? nses))
       (finally
-        (restore-vars! nses)))))
+        (restore-vars! nses)
+        (shutdown-agents)))))
 
 (defn- parse-kw
   [^String s]
@@ -123,9 +124,5 @@
           (System/exit 1))
       (if (-> args :options :test-help)
         (help args)
-        (try
           (let [{:keys [fail error]} (test (:options args))]
-            (System/exit (if (zero? (+ fail error)) 0 1)))
-          (finally
-            ;; Only called if `test` raises an exception
-            (shutdown-agents)))))))
+            (System/exit (if (zero? (+ fail error)) 0 1)))))))
