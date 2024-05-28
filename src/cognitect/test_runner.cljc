@@ -64,10 +64,11 @@
   [options]
   (let [dirs (or (:dir options)
                  #{"test"})
+				 		 
         nses (->> dirs
                   #?(:clj (map io/file)
 				     :cljr (map io/dir-info))
-                  (mapcat find/find-namespaces-in-dir))
+                  (mapcat #(find/find-namespaces-in-dir %  #?(:cljr find/cljr :default nil))))
         nses (filter (ns-filter options) nses)]
     (println (format "\nRunning tests in %s" dirs))
     (dorun (map require nses))
