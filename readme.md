@@ -132,6 +132,6 @@ If both inclusions and exclusions are present, exclusions take priority over inc
 
 ## Copyright and License
 
-Copyright © 2018-2022 Cognitect
+Copyright © Nu North America, Inc.
 
 Licensed under the Eclipse Public License, Version 2.0
