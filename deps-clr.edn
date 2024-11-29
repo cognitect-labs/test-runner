@@ -1,5 +1,5 @@
 {:paths ["src"]
- :deps {io.github.clojure/clr.tools.namespace {:git/tag "v1.5.2" :git/sha "d540923"}
+ :deps {io.github.clojure/clr.tools.namespace {:git/tag "v1.5.3" :git/sha "ca0f5dc"}
         io.github.clojure/tools.cli {:git/tag "v1.1.230" :git/sha "717e187"}}
  :aliases {:test {:extra-paths ["test"]
                   :extra-deps {io.github.clojure/clr.test.check {:git/tag "v1.1.2"  :git/sha "26f34e6"}}
