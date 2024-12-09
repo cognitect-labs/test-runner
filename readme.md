@@ -37,7 +37,7 @@ probably wish to put it in the `test` alias:
 ;; v0.5.1
 :aliases {:test {:extra-paths ["test"]
                  :extra-deps {io.github.cognitect-labs/test-runner 
-                              {:git/tag "v0.5.1clr" :git/sha "814e06f"}}
+                              {:git/tag "v0.5.3clr" :git/sha "ae91dd2"}}
                  :main-opts ["-m" "cognitect.test-runner"]
                  :exec-fn cognitect.test-runner.api/test}}
 ```
