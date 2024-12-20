@@ -25,14 +25,19 @@ suite of decomplected project management tools.
 
 ## Configuration 
 
+This fork of test-runner has a port of the JVM version to run in CLR; 
+this is in the clr-port branch.
+
+
+
 Include a dependency on this project in your `deps.edn`. You will
 probably wish to put it in the `test` alias:
 
 ```clojure
-;; v0.5.1
+;; v0.5.3
 :aliases {:test {:extra-paths ["test"]
                  :extra-deps {io.github.cognitect-labs/test-runner 
-                              {:git/tag "v0.5.1" :git/sha "dfb30dd"}}
+                              {:git/tag "v0.5.3clr" :git/sha "ae91dd2"}}
                  :main-opts ["-m" "cognitect.test-runner"]
                  :exec-fn cognitect.test-runner.api/test}}
 ```

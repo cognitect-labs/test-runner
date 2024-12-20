@@ -1,0 +1,7 @@
+{:paths ["src"]
+ :deps {io.github.clojure/clr.tools.namespace {:git/tag "v1.5.4" :git/sha "46d81cb"}
+        io.github.clojure/tools.cli {:git/tag "v1.1.230" :git/sha "717e187"}}
+ :aliases {:test {:extra-paths ["test"]
+                  :extra-deps {io.github.clojure/clr.test.check {:git/tag "v1.1.2"  :git/sha "26f34e6"}}
+                  :main-opts ["-m" "cognitect.test-runner"]
+                  :exec-fn cognitect.test-runner.api/test}}}

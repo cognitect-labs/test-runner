@@ -1,6 +1,7 @@
 (ns cognitect.test-runner
   (:require [clojure.tools.namespace.find :as find]
-            [clojure.java.io :as io]
+            #?(:clj [clojure.java.io :as io]
+			   :cljr [clojure.clr.io :as io])
             [clojure.test :as test]
             [clojure.tools.cli :as cli])
   (:refer-clojure :exclude [test]))
@@ -63,9 +64,11 @@
   [options]
   (let [dirs (or (:dir options)
                  #{"test"})
+				 		 
         nses (->> dirs
-                  (map io/file)
-                  (mapcat find/find-namespaces-in-dir))
+                  #?(:clj (map io/file)
+				     :cljr (map io/dir-info))
+                  (mapcat #(find/find-namespaces-in-dir %  #?(:cljr find/cljr :default nil))))
         nses (filter (ns-filter options) nses)]
     (println (format "\nRunning tests in %s" dirs))
     (dorun (map require nses))
@@ -77,7 +80,7 @@
 
 (defn- parse-kw
   [^String s]
-  (if (.startsWith s ":") (read-string s) (keyword s)))
+  (if (#?(:clj .startsWith :cljr .StartsWith) s ":") (read-string s) (keyword s)))
 
 
 (defn- accumulate [m k v]
@@ -120,12 +123,12 @@
       (do (doseq [e (:errors args)]
             (println e))
           (help args)
-          (System/exit 1))
+          (#?(:clj System/exit :cljr Environment/Exit) 1))
       (if (-> args :options :test-help)
         (help args)
         (try
           (let [{:keys [fail error]} (test (:options args))]
-            (System/exit (if (zero? (+ fail error)) 0 1)))
+            (#?(:clj System/exit :cljr Environment/Exit) (if (zero? (+ fail error)) 0 1)))
           (finally
             ;; Only called if `test` raises an exception
             (shutdown-agents)))))))
