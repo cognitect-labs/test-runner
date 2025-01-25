@@ -1,4 +1,8 @@
+.calva/repl.calva-repl
+.clj-kondo/.cache
 .cpcache
+.lsp/.cache
+.portal/vs-code.edn
 .rebl
 .rebl.sh
 .idea/

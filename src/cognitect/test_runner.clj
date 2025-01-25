@@ -1,7 +1,10 @@
 (ns cognitect.test-runner
-  (:require [clojure.tools.namespace.find :as find]
+  (:require [cognitect.test-runner.protocols :as p]
+            [clojure.tools.namespace.find :as find]
             [clojure.java.io :as io]
             [clojure.test :as test]
+            [clojure.test.junit :as junit]
+            [clojure.test.tap :as tap]
             [clojure.tools.cli :as cli])
   (:refer-clojure :exclude [test]))
 
@@ -53,11 +56,35 @@
                               (assoc :test (::test %))
                               (dissoc ::test)))))))
 
-(defn- contains-tests?
+(defn- ns-contains-tests?
   "Check if a namespace contains some tests to be executed."
   [ns]
   (some (comp :test meta)
         (-> ns ns-publics vals)))
+
+(defrecord ClojureTestRunner []
+  p/TestRunner
+  (enable-filtering! [_ options nses]
+    (filter-vars! nses (var-filter options)))
+  (contains-tests? [_ _ ns] (ns-contains-tests? ns))
+  (run-tests [this options nses]
+    ;; we only care about junit and tap (other test runners might care about
+    ;; other values)
+    (if-let [outputs (seq (filter #{'junit 'tap} (:output options)))]
+      (doseq [output outputs]
+        (case output
+          junit
+          (junit/with-junit-output
+            (apply test/run-tests (filter #(p/contains-tests? this options %) nses)))
+          tap
+          (tap/with-tap-output
+            (apply test/run-tests (filter #(p/contains-tests? this options %) nses)))))
+      (apply test/run-tests (filter #(p/contains-tests? this options %) nses))))
+  (disable-filtering! [_ _ nses]
+    (restore-vars! nses)))
+
+(defn create-clojure-test-runner []
+  (->ClojureTestRunner))
 
 (defn test
   [options]
@@ -66,14 +93,24 @@
         nses (->> dirs
                   (map io/file)
                   (mapcat find/find-namespaces-in-dir))
-        nses (filter (ns-filter options) nses)]
+        nses (filter (ns-filter options) nses)
+        tsym (or (:test-runner-fn options)
+                 'cognitect.test-runner/create-clojure-test-runner)
+        t-fn (try
+               (require (symbol (namespace tsym)))
+               (resolve tsym)
+               (catch Throwable t
+                 (println "Unable to find test runner function:" tsym)
+                 (throw t)))
+        ;; create the test runner:
+        trun (t-fn)]
     (println (format "\nRunning tests in %s" dirs))
     (dorun (map require nses))
     (try
-      (filter-vars! nses (var-filter options))
-      (apply test/run-tests (filter contains-tests? nses))
+      (p/enable-filtering! trun options nses)
+      (p/run-tests trun options nses)
       (finally
-        (restore-vars! nses)))))
+        (p/disable-filtering! trun options nses)))))
 
 (defn- parse-kw
   [^String s]
@@ -102,6 +139,11 @@
    ["-e" "--exclude KEYWORD" "Exclude tests with this metadata keyword."
     :parse-fn parse-kw
     :assoc-fn accumulate]
+   ["-t" "--test-runner-fn SYMBOL" "Symbol indicating the test runner function to use."
+    :parse-fn symbol]
+   [nil "--output SYMBOL" "Output format, specific to the selected test runner."
+    :parse-fn symbol
+    :assoc-fn (fn [m k v] (update m k (fnil conj []) v))]
    ["-H" "--test-help" "Display this help message"]])
 
 (defn- help
